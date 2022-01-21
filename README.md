@@ -7,7 +7,7 @@ JayDiscordPresence is a simple script for FiveM servers that allows them to cust
 
 ## Installation
 
-Download the script [here](TBA) and extract files to your FiveM server's resources folder and add the following to your server.cfg file.
+Download the script [here](https://github.com/JayPaulinCodes/JayDiscordPresence/releases) and extract files to your FiveM server's resources folder and add the following to your server.cfg file.
 
 ```txt
 ensure JayDiscordPresence
