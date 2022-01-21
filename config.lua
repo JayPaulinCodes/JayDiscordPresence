@@ -1,9 +1,9 @@
 config = {
     refreshRate = 2500, -- How fast to refresh the presence in MS
-    discodAppID = 904853202820792340, -- The discord application id
+    discodAppID = 123456789, -- The discord application id
 
     largeIconAssetName = "logo1", -- This is the asset name of the large icon on your discord application
-    largeIconHoverText = "Ontario Provincial RolePlay", -- This is the text to display when the large icon is hovered 
+    largeIconHoverText = "Some Cool Hover Text", -- This is the text to display when the large icon is hovered 
 
     useSmallIcon = true, -- Do you want a small icon to be displayed?
     smallIconAssetName = "logo2", -- This is the asset name of the small icon on your discord application
@@ -15,7 +15,7 @@ config = {
             text = "Join Our Discord!", -- The text to display on the top button
             -- Use the following in the url field bellow to connect to your fivem server fivem://connect/YourServerIPHere:30120
             -- NOTE: this has to start with "fivem://connect/" or "https://"
-            url = "https://discord.gg/hPttnfrwAb" -- The url to attach to the top button
+            url = "https://discord.gg/" -- The url to attach to the top button
         },
 
         button2 = {
@@ -23,7 +23,7 @@ config = {
             text = "Connect To The Server!",  -- The text to display on the bottom button
             -- Use the following in the url field bellow to connect to your fivem server fivem://connect/YourServerIPHere:30120
             -- NOTE: this has to start with "fivem://connect/" or "https://"
-            url = "fivem://connect/142.126.189.97:30120" -- The url to attach to the bottom button
+            url = "fivem://connect/" -- The url to attach to the bottom button
         }
     },
 
