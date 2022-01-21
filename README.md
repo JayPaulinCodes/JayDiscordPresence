@@ -1,16 +1,16 @@
-# DiscordPresence
+# JayDiscordPresence
 
-DiscordPresence is a simple script for FiveM servers that allows them to customize the display of a user's discord status while they are on the server.
+JayDiscordPresence is a simple script for FiveM servers that allows them to customize the display of a user's discord status while they are on the server.
 
 ## Preview
 ![Script Preview](https://i.imgur.com/5pkqyj2.png)
 
 ## Installation
 
-Download the script [here](https://github.com/JayPaulinCodes/discordPresence/releases/tag/Stable) and extract files to your FiveM server's resources folder and add the following to your server.cfg file.
+Download the script [here](TBA) and extract files to your FiveM server's resources folder and add the following to your server.cfg file.
 
 ```txt
-ensure discordPresence
+ensure JayDiscordPresence
 ```
 
 ## Setup
