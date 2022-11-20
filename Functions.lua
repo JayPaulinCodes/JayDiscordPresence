@@ -10,7 +10,7 @@ end
     @param AssetName - String - The asset name of the icon to set.
     @param HoverText - String - The text to display when hoveing over the icon.
 ]]
-function Discord.setLargeIcon(AssetName, HoverText)
+function Discord_setLargeIcon(AssetName, HoverText)
     SetDiscordRichPresenceAsset(AssetName)
     SetDiscordRichPresenceAssetText(HoverText)
 end
@@ -23,7 +23,7 @@ end
     @param AssetName - String - The asset name of the icon to set.
     @param HoverText - String - The text to display when hoveing over the icon.
 ]]
-function Discord.setSmallIcon(AssetName, HoverText)
+function Discord_setSmallIcon(AssetName, HoverText)
     SetDiscordRichPresenceAssetSmall(AssetName)
     SetDiscordRichPresenceAssetSmallText(HoverText)
 end
@@ -37,7 +37,7 @@ end
     @param ButtonLabel - String - The text to display on the button.
     @param ButtonURL - String - The URL the button should send users to on click.
 ]]
-function Discord.setButton(ButtonId, ButtonLabel, ButtonURL)
+function Discord_setButton(ButtonId, ButtonLabel, ButtonURL)
     SetDiscordRichPresenceAction(ButtonId, ButtonLabel, ButtonURL)
 end
 

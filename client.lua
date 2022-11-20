@@ -3,19 +3,19 @@ Citizen.CreateThread(function()
 		SetDiscordAppId(config.discodAppID)
 
         -- Setting the large icon
-        Discord.setLargeIcon(config.largeIconAssetName, config.largeIconHoverText)
+        Discord_setLargeIcon(config.largeIconAssetName, config.largeIconHoverText)
        
         -- Setting the small icon
-        if config.useSmallIcon then Discord.setLargeIcon(config.smallIconAssetName, config.smallIconHoverText) end
+        if config.useSmallIcon then Discord_setLargeIcon(config.smallIconAssetName, config.smallIconHoverText) end
 
         -- Setting button 1
-        if config.buttons.button1.enabled then Discord.setButton(0, config.buttons.button1.text, config.buttons.button1.url) end
+        if config.buttons.button1.enabled then Discord_setButton(0, config.buttons.button1.text, config.buttons.button1.url) end
 
         -- Setting button 2
         if config.buttons.button2.enabled and config.buttons.button1.enabled then
-            Discord.setButton(1, config.buttons.button2.text, config.buttons.button2.url)
+            Discord_setButton(1, config.buttons.button2.text, config.buttons.button2.url)
         elseif config.buttons.button2.enabled and not config.buttons.button1.enabled then
-            Discord.setButton(0, config.buttons.button2.text, config.buttons.button2.url)
+            Discord_setButton(0, config.buttons.button2.text, config.buttons.button2.url)
         end
 
 
@@ -47,6 +47,7 @@ Citizen.CreateThread(function()
             elseif GetVehiclePedIsUsing(PlayerPedId()) ~= nil then
                 VehSpeed = GetEntitySpeed(GetVehiclePedIsUsing(PlayerPedId()))
 			    CurSpeed = config.useMPH and math.ceil(VehSpeed * 2.236936) or math.ceil(VehSpeed * 3.6)
+                CurSpeed = ternary(config.useMPH == true, CurSpeed.." MPH", CurSpeed.." KM/H")
 				VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
 
                 if not IsPedInAnyHeli(PlayerPedId()) and not IsPedInAnyPlane(PlayerPedId()) and not IsPedOnFoot(PlayerPedId()) and not IsPedInAnySub(PlayerPedId()) and not IsPedInAnyBoat(PlayerPedId()) then
@@ -60,7 +61,7 @@ Citizen.CreateThread(function()
                 elseif IsPedInAnySub(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then text = config.locationConfig.inAquaVehicle.submarine end
             end
 
-            text = replacePlaceholdersInText(text, StreetName, VehName, ternary(config.useMPH == true, CurSpeed.." MPH", CurSpeed.." KM/H"), ZoneLabel)
+            text = replacePlaceholdersInText(text, StreetName, VehName, CurSpeed, ZoneLabel)
             SetRichPresence(text)
 
         end

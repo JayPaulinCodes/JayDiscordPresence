@@ -1,6 +1,6 @@
 config = {
     refreshRate = 2500, -- How fast to refresh the presence in MS
-    discodAppID = 123456789, -- The discord application id
+    discodAppID = 904853202820792340, -- The discord application id
 
     largeIconAssetName = "logo1", -- This is the asset name of the large icon on your discord application
     largeIconHoverText = "Some Cool Hover Text", -- This is the text to display when the large icon is hovered 
