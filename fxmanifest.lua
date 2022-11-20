@@ -10,5 +10,6 @@ shared_scripts {
 }
 
 client_scripts {
+    "functions.lua",
     "client.lua"
 }  

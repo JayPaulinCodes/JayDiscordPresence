@@ -3,25 +3,19 @@ Citizen.CreateThread(function()
 		SetDiscordAppId(config.discodAppID)
 
         -- Setting the large icon
-		SetDiscordRichPresenceAsset(config.largeIconAssetName)
-        SetDiscordRichPresenceAssetText(config.largeIconHoverText)
+        Discord.setLargeIcon(config.largeIconAssetName, config.largeIconHoverText)
        
         -- Setting the small icon
-        if config.useSmallIcon then 
-            SetDiscordRichPresenceAssetSmall(config.smallIconAssetName)
-            SetDiscordRichPresenceAssetSmallText(config.smallIconHoverText)
-        end
+        if config.useSmallIcon then Discord.setLargeIcon(config.smallIconAssetName, config.smallIconHoverText) end
 
-        -- Setting the button 2
-        if config.buttons.button1.enabled then 
-            SetDiscordRichPresenceAction(0, config.buttons.button1.text, config.buttons.button1.url)
-        end 
+        -- Setting button 1
+        if config.buttons.button1.enabled then Discord.setButton(0, config.buttons.button1.text, config.buttons.button1.url) end
 
-        -- Setting the button 2
+        -- Setting button 2
         if config.buttons.button2.enabled and config.buttons.button1.enabled then
-            SetDiscordRichPresenceAction(1, config.buttons.button2.text, config.buttons.button2.url)
+            Discord.setButton(1, config.buttons.button2.text, config.buttons.button2.url)
         elseif config.buttons.button2.enabled and not config.buttons.button1.enabled then
-            SetDiscordRichPresenceAction(0, config.buttons.button2.text, config.buttons.button2.url)
+            Discord.setButton(0, config.buttons.button2.text, config.buttons.button2.url)
         end
 
 
@@ -34,6 +28,10 @@ Citizen.CreateThread(function()
             local StreetHash = GetStreetNameAtCoord(x, y, z)
             local Zone = GetNameOfZone(x, y, z)
             local ZoneLabel = GetLabelText(Zone)
+            local text = nil
+            local VehSpeed = nil
+            local CurSpeed = nil
+            local VehName = nil
             if StreetHash ~= nil then 
                 StreetName = GetStreetNameFromHashKey(StreetHash)
             else 
@@ -42,192 +40,30 @@ Citizen.CreateThread(function()
 
 
             if IsPedOnFoot(PlayerPedId()) and not IsEntityInWater(PlayerPedId()) then
+				if IsPedSprinting(PlayerPedId()) then text = config.locationConfig.onFoot.sprinting
+				elseif IsPedRunning(PlayerPedId()) then text = config.locationConfig.onFoot.running
+				elseif IsPedWalking(PlayerPedId()) then text = config.locationConfig.onFoot.walking
+				elseif IsPedStill(PlayerPedId()) then text = config.locationConfig.onFoot.standing end
+            elseif GetVehiclePedIsUsing(PlayerPedId()) ~= nil then
+                VehSpeed = GetEntitySpeed(GetVehiclePedIsUsing(PlayerPedId()))
+			    CurSpeed = config.useMPH and math.ceil(VehSpeed * 2.236936) or math.ceil(VehSpeed * 3.6)
+				VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
 
-				if IsPedSprinting(PlayerPedId()) then
+                if not IsPedInAnyHeli(PlayerPedId()) and not IsPedInAnyPlane(PlayerPedId()) and not IsPedOnFoot(PlayerPedId()) and not IsPedInAnySub(PlayerPedId()) and not IsPedInAnyBoat(PlayerPedId()) then
+                    if CurSpeed > 0 then text = config.locationConfig.inCar.driving
+                    else text = config.locationConfig.inCar.parked end
+                elseif IsPedInAnyHeli(PlayerPedId()) or IsPedInAnyPlane(PlayerPedId()) then
+                    if IsEntityInAir(GetVehiclePedIsUsing(PlayerPedId())) or GetEntityHeightAboveGround(GetVehiclePedIsUsing(PlayerPedId())) > 5.0 then text = config.locationConfig.inSky.flying
+                    else text = config.locationConfig.inSky.stopped end
+                elseif IsEntityInWater(PlayerPedId()) then text = config.locationConfig.onFoot.swiming
+                elseif IsPedInAnyBoat(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then text = config.locationConfig.inAquaVehicle.boat
+                elseif IsPedInAnySub(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then text = config.locationConfig.inAquaVehicle.submarine end
+            end
 
-                    text = config.locationConfig.onFoot.sprinting
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-
-					SetRichPresence(text)
-
-				elseif IsPedRunning(PlayerPedId()) then
-					
-                    text = config.locationConfig.onFoot.running
-                    if string.find(text, "_STREET_") then
-                        
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        print(2)
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-
-					SetRichPresence(text)
-
-				elseif IsPedWalking(PlayerPedId()) then
-
-                    text = config.locationConfig.onFoot.walking
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-
-					SetRichPresence(text)
-
-				elseif IsPedStill(PlayerPedId()) then
-
-                    text = config.locationConfig.onFoot.standing
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-
-					SetRichPresence(text)
-
-				end
-
-			elseif GetVehiclePedIsUsing(PlayerPedId()) ~= nil and not IsPedInAnyHeli(PlayerPedId()) and not IsPedInAnyPlane(PlayerPedId()) and not IsPedOnFoot(PlayerPedId()) and not IsPedInAnySub(PlayerPedId()) and not IsPedInAnyBoat(PlayerPedId()) then
-				
-                local VehSpeed = GetEntitySpeed(GetVehiclePedIsUsing(PlayerPedId()))
-				local CurSpeed = config.useMPH and math.ceil(VehSpeed * 2.236936) or math.ceil(VehSpeed * 3.6)
-				local VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
-				
-                if CurSpeed > 0 then
-
-                    text = config.locationConfig.inCar.driving
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-                    if string.find(text, "_SPEED_") and config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." MPH")
-                    end
-                    if string.find(text, "_SPEED_") and not config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." KM/H")
-                    end
-                    if string.find(text, "_VEHICLE_") then
-                        text = text:gsub("_VEHICLE_", VehName)
-                    end
-
-					SetRichPresence(text)
-
-				elseif CurSpeed == 0 then
-
-                    text = config.locationConfig.inCar.parked
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-                    if string.find(text, "_VEHICLE_") then
-                        text = text:gsub("_VEHICLE_", VehName)
-                    end
-
-					SetRichPresence(text)
-
-				end
-
-			elseif IsPedInAnyHeli(PlayerPedId()) or IsPedInAnyPlane(PlayerPedId()) then
-
-                local VehSpeed = GetEntitySpeed(GetVehiclePedIsUsing(PlayerPedId()))
-				local CurSpeed = config.useMPH and math.ceil(VehSpeed * 2.236936) or math.ceil(VehSpeed * 3.6)
-				local VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
-				
-                if IsEntityInAir(GetVehiclePedIsUsing(PlayerPedId())) or GetEntityHeightAboveGround(GetVehiclePedIsUsing(PlayerPedId())) > 5.0 then
-                    
-                    text = config.locationConfig.inSky.flying
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-                    if string.find(text, "_SPEED_") and config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." MPH")
-                    end
-                    if string.find(text, "_SPEED_") and not config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." KM/H")
-                    end
-                    if string.find(text, "_VEHICLE_") then
-                        text = text:gsub("_VEHICLE_", VehName)
-                    end
-
-					SetRichPresence(text)
-
-				else
-
-                    text = config.locationConfig.inSky.stopped
-                    if string.find(text, "_STREET_") then
-                        text = text:gsub("_STREET_", StreetName)
-                    end
-                    if string.find(text, "_ZONE_") then
-                        text = text:gsub("_ZONE_", ZoneLabel)
-                    end
-                    if string.find(text, "_SPEED_") and config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." MPH")
-                    end
-                    if string.find(text, "_SPEED_") and not config.useMPH then
-                        text = text:gsub("_SPEED_", CurSpeed.." KM/H")
-                    end
-                    if string.find(text, "_VEHICLE_") then
-                        text = text:gsub("_VEHICLE_", VehName)
-                    end
-
-					SetRichPresence(text)
-
-				end
-
-			elseif IsEntityInWater(PlayerPedId()) then
-
-                text = config.locationConfig.onFoot.swiming
-                if string.find(text, "_STREET_") then
-                    text = text:gsub("_STREET_", StreetName)
-                end
-                if string.find(text, "_ZONE_") then
-                    text = text:gsub("_ZONE_", ZoneLabel)
-                end
-
-                SetRichPresence(text)
-			
-            elseif IsPedInAnyBoat(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then
-				
-                local VehName = GetLabelText(GetDisplayNameFromVehicleModel(GetEntityModel(GetVehiclePedIsUsing(PlayerPedId()))))
-				
-                text = config.locationConfig.inAquaVehicle.boat
-                if string.find(text, "_STREET_") then
-                    text = text:gsub("_STREET_", StreetName)
-                end
-                if string.find(text, "_ZONE_") then
-                    text = text:gsub("_ZONE_", ZoneLabel)
-                end
-                if string.find(text, "_VEHICLE_") then
-                    text = text:gsub("_VEHICLE_", VehName)
-                end
-
-                SetRichPresence(text)
-			
-            elseif IsPedInAnySub(PlayerPedId()) and IsEntityInWater(GetVehiclePedIsUsing(PlayerPedId())) then
-				
-                text = config.locationConfig.inAquaVehicle.submarine
-
-                SetRichPresence(text)
-
-			end
+            text = replacePlaceholdersInText(text, StreetName, VehName, ternary(config.useMPH == true, CurSpeed.." MPH", CurSpeed.." KM/H"), ZoneLabel)
+            SetRichPresence(text)
 
         end
-
 
 		Citizen.Wait(config.refreshRate)
 	end
