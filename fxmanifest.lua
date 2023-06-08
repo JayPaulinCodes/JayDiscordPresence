@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 games { 'gta5' }
 
-author "Jay (Error#3569)"
+author "JayPaulinCodes"
 
-version 'legacy'
+version '1.0.0'
 
 shared_scripts {
     "config.lua"
